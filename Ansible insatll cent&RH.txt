@@ -1,0 +1,9 @@
+Ansible insatll cent&RH
+
+$ yum update -y 
+
+$yum install epel-rlease -y
+
+$yum install Ansible
+
+to do setup ssh see su privilage and ssh config files
