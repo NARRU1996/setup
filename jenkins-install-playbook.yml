@@ -1,0 +1,40 @@
+---
+- name: install jenkins
+  hosts: jenkins
+  become: yes
+  tasks:
+  - name: yum update
+    yum:
+      name: '*'
+      state: latest
+
+  - name: add the jenkins repo
+    get_url:
+      url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+      dest:  /etc/yum.repos.d/jenkins.repo
+
+  - name: import a key file from jenkins-ci
+    ansible.builtin.rpm_key:
+      state: present
+      key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+
+  - name: yum update
+    yum:
+      name: '*'
+      state: latest
+
+  - name: install java
+    shell: yum install java-11-openjdk -y
+
+  - name: install jenkins
+    yum:
+      name: jenkins
+      state: installed
+
+  - name: start jenkins
+    ansible.builtin.systemd:
+      enabled: yes
+      name: jenkins
+      state: started
+
+ansible-playbook  jenkins-install-playbook.yml --check 
