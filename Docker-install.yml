@@ -1,0 +1,41 @@
+---
+- name: install docker
+  hosts:
+  become: yes
+  tasks:
+    - name: remove old repo
+      yum:
+        name:
+          - docker 
+          - docker-client 
+          - docker-client-latest 
+          - docker-common 
+          - docker-latest 
+          - docker-latest-logrotate 
+          - docker-logrotate 
+          - docker-engine 
+        state: absent
+    - name: yum utils install
+      yum:
+        name: yum-utils
+        state: latest
+    - name: adding the docker repo
+      shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    - name: installing docker
+      yum:
+        name: "{{ pakages }}"
+      vars:
+        pakages:
+          - docker-ce 
+          - docker-ce-cli 
+          - containerd.io 
+          - docker-buildx-plugin 
+          - docker-compose-plugin
+    - name: starting the docker
+      systemd: 
+       state: started
+       name: docker
+
+
+
+...
